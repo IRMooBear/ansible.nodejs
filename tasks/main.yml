@@ -1,0 +1,7 @@
+---
+# tasks file for nodejs
+- include: install_from_binaries.yml
+  when: not node_compile_from_source
+- include: compile_nodejs.yml
+  when: node_compile_from_source
+

@@ -1,0 +1,10 @@
+---
+# defaults file for nodejs
+node_version: 11
+node_compile_from_source: no
+node_source:
+  Debian:
+    source: https://deb.nodesource.com/setup_
+  RedHat:
+    source: https://rpm.nodesource.com/setup_
+node_source_url: "{{ node_source[ansible_os_family].source }}{{ node_version}}.x"

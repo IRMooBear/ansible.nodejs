@@ -1,0 +1,6 @@
+---
+- name: apt install nodejs
+  become: yes
+  apt:
+    name: nodejs
+    state: present

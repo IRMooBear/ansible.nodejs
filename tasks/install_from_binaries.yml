@@ -1,0 +1,20 @@
+---
+- name: download node installer
+  become: yes
+  get_url:
+    url: "{{ node_source_url }}"
+    dest: /usr/local/src/setup_{{ node_version }}.x
+    owner: "{{ ansible_user }}"
+    mode: 0755
+- name: run installer
+  become: yes
+  command: /usr/local/src/setup_{{ node_version }}.x
+- include: RedHat.yml
+  when: ansible_os_family == 'RedHat'
+- include: Debian.yml
+  when: ansible_os_family == 'Debian'
+- name: delete install script
+  become: yes
+  file:
+    path: /usr/local/src/setup_{{ node_version }}.x
+    state: absent

@@ -1,0 +1,39 @@
+---
+- name: extract node.js
+  become: yes
+  unarchive:
+    remote_src: true
+    src: https://nodejs.org/dist/v{{ node_version }}/node-v{{ node_version }}.tar.gz
+    dest: /usr/local/src/
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+- name: check previous node.js exists
+  stat:
+    path: /usr/local/src/node-v{{ node_version }}
+  register: previous_nodejs_exists
+- name: make clean node.js
+  become: yes
+  make:
+    target: clean
+    chdir: /usr/local/src/node-v{{ node_version }}
+  when: previous_nodejs_exists.stat.exists == true
+- name: configure node.js
+  become: no
+  command: ./configure
+  args:
+    chdir: /usr/local/src/node-v{{ node_version }}
+- name: make node.js
+  become: no
+  make:
+    params:
+      MAKEFLAGS: -j{{ compile_threads }}
+      NUM_THREADS: "{{ ansible_processor_cores }}"
+  args:
+    chdir: /usr/local/src/node-v{{ node_version }}
+  async: 3600
+  poll: 5
+- name: make install node.js
+  make:
+    target: install
+  args:
+    chdir: /usr/local/src/node-v{{ node_version }}
