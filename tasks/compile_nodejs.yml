@@ -16,7 +16,7 @@
   make:
     target: clean
     chdir: /usr/local/src/node-v{{ node_version }}
-  when: previous_nodejs_exists.stat.exists == true
+  when: previous_nodejs_exists.stat.exists
 - name: configure node.js
   become: no
   command: ./configure
